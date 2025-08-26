@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { toast } = useToast();
@@ -132,55 +132,61 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <Suspense>
-      <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-muted/30 to-background dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900">
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4 md:p-6">
-          <Card className="w-full max-w-md shadow-2xl animate-fade-in rounded-xl glassy-card">
-            <CardHeader className="text-center space-y-3 pt-8">
-              <KeyRound className="mx-auto h-16 w-16 text-primary" />
-              <CardTitle className="font-headline text-3xl text-primary">{currentContent.pageTitle}</CardTitle>
-              <CardDescription className="text-muted-foreground text-base px-2">{currentContent.pageDescription}</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 pb-8 px-6 md:px-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword" className="text-base font-semibold">{currentContent.newPasswordLabel}</Label>
-                  <Input
-                    id="newPassword"
-                    type="password"
-                    placeholder={currentContent.newPasswordPlaceholder}
-                    required
-                    className="text-base py-3 px-4 rounded-lg border-2 focus:border-primary focus:ring-primary"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-base font-semibold">{currentContent.confirmPasswordLabel}</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder={currentContent.confirmPasswordPlaceholder}
-                    required
-                    className="text-base py-3 px-4 rounded-lg border-2 focus:border-primary focus:ring-primary"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full font-bold text-lg py-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow-primary">
-                  {currentContent.resetPasswordButton}
-                </Button>
-              </form>
-            </CardContent>
-            <CardFooter className="flex flex-col items-center pb-8">
-              <Button variant="link" asChild className="text-primary p-0 h-auto font-semibold text-base hover:underline">
-                <Link href="/login"><ArrowLeft className="mr-1.5 h-4 w-4"/>{currentContent.backToLogin}</Link>
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-muted/30 to-background dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900">
+      <Header />
+      <main className="flex flex-1 items-center justify-center p-4 md:p-6">
+        <Card className="w-full max-w-md shadow-2xl animate-fade-in rounded-xl glassy-card">
+          <CardHeader className="text-center space-y-3 pt-8">
+            <KeyRound className="mx-auto h-16 w-16 text-primary" />
+            <CardTitle className="font-headline text-3xl text-primary">{currentContent.pageTitle}</CardTitle>
+            <CardDescription className="text-muted-foreground text-base px-2">{currentContent.pageDescription}</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6 pb-8 px-6 md:px-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="newPassword" className="text-base font-semibold">{currentContent.newPasswordLabel}</Label>
+                <Input
+                  id="newPassword"
+                  type="password"
+                  placeholder={currentContent.newPasswordPlaceholder}
+                  required
+                  className="text-base py-3 px-4 rounded-lg border-2 focus:border-primary focus:ring-primary"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-base font-semibold">{currentContent.confirmPasswordLabel}</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder={currentContent.confirmPasswordPlaceholder}
+                  required
+                  className="text-base py-3 px-4 rounded-lg border-2 focus:border-primary focus:ring-primary"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="w-full font-bold text-lg py-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow-primary">
+                {currentContent.resetPasswordButton}
               </Button>
-            </CardFooter>
-          </Card>
-        </main>
-      </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col items-center pb-8">
+            <Button variant="link" asChild className="text-primary p-0 h-auto font-semibold text-base hover:underline">
+              <Link href="/login"><ArrowLeft className="mr-1.5 h-4 w-4"/>{currentContent.backToLogin}</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </main>
+    </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense>
+      <ResetPasswordContent />
     </Suspense>
   );
 }

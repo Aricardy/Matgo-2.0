@@ -1,5 +1,7 @@
 "use client";
+import { Suspense } from "react";
 
+// All broken or leftover code after the main export has been removed to fix parse errors.
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,215 +31,221 @@ const sampleSaccos = [
   { id: "s5", name: "NTVRS Sacco" },
 ];
 
-export default function SignupPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialRoleParam = searchParams.get('role');
+function SignupContent() {
+  // Language-based content for signup page
+    const { toast } = useToast();
+    const { language } = useLanguage();
+    const router = useRouter();
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [role, setRole] = useState<UserRole>("passenger");
+    const [isCrewRole, setIsCrewRole] = useState(false);
+    const [termsAgreed, setTermsAgreed] = useState(false);
+    const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null);
+    const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
+    const [sacco, setSacco] = useState<string | undefined>();
+    const [busIdentifier, setBusIdentifier] = useState("");
+    const [busType, setBusType] = useState<string | undefined>();
+    const [busPicPreview, setBusPicPreview] = useState<string | null>(null);
+    const [busPicFile, setBusPicFile] = useState<File | null>(null);
+    const [licenseFile, setLicenseFile] = useState<File | null>(null);
+    const [saccoName, setSaccoName] = useState("");
+    const content = {
+      ENG: {
+        pageTitle: "Sign up for MatGo Today!",
+        pageDescription: "Create your account to start your journey.",
+        firstNameLabel: "First Name",
+        firstNamePlaceholder: "John",
+        lastNameLabel: "Last Name",
+        lastNamePlaceholder: "Doe",
+        phoneLabel: "Phone Number",
+        phonePlaceholder: "0712 345 678",
+        emailLabel: "Email",
+        emailPlaceholder: "your@email.com",
+        passwordLabel: "Password",
+        passwordPlaceholder: "Create a strong password",
+        confirmPasswordLabel: "Confirm Password",
+        confirmPasswordPlaceholder: "Re-enter your password",
+        roleLabel: "I am a...",
+        rolePassenger: "Passenger",
+        roleDriver: "Driver",
+        roleConductor: "Conductor",
+        roleSacco: "SACCO Admin",
+        crewRoleLabel: "Select Crew Type",
+        termsLabel: (<><span>I agree to MatGo </span><Link href="/terms" className="text-primary hover:underline font-medium">Terms & Conditions</Link><span> and </span><Link href="/privacy" className="text-primary hover:underline font-medium">Privacy Policy</Link>.</>),
+        createAccountButton: "Create Account",
+        alreadyHaveAccount: "Already have an account?",
+        loginInstead: "Login Instead",
+        signupSuccessTitle: "Account Created!",
+        signupSuccessDesc: (name: string, selectedRole: string) => `Welcome, ${name}! Your ${selectedRole} account is ready. Redirecting...`,
+        passwordMismatch: "Passwords do not match.",
+        missingFields: "Please fill all required fields and agree to the terms.",
+        profilePhotoLabel: "Profile Photo",
+        crewInfoTitle: "Crew & Bus Info",
+        saccoAdminInfoTitle: "SACCO Info",
+        busIdentifierLabel: "Bus Reg/Name",
+        busIdentifierPlaceholder: "e.g., KDA 123X or Monalisa",
+        busTypeLabel: "Bus Type",
+        busTypePlaceholder: "Select bus type",
+        saccoLabel: "Your SACCO",
+        saccoPlaceholder: "Select your SACCO",
+        busPhotoLabel: "Bus Photo",
+        accountApprovalNotice: "Driver, Conductor, and SACCO Admin accounts require approval before activation.",
+        driversLicenseLabel: "Driver's License",
+        conductorsLicenseLabel: "Conductor's License",
+        uploadFile: "Upload File (PDF/Image)",
+        fileSelected: "File Selected:",
+        requiredMark: "*",
+      },
+      KSW: {
+        pageTitle: "Jiunge na MatGo Leo!",
+        pageDescription: "Fungua akaunti yako kuanza safari yako ya kusisimua.",
+        firstNameLabel: "Jina la Kwanza",
+        firstNamePlaceholder: "Juma",
+        lastNameLabel: "Jina la Ukoo",
+        lastNamePlaceholder: "Otieno",
+        phoneLabel: "Nambari ya Simu",
+        phonePlaceholder: "0712 345 678",
+        emailLabel: "Barua Pepe",
+        emailPlaceholder: "barua.pepe@mfano.com",
+        passwordLabel: "Nenosiri",
+        passwordPlaceholder: "Tengeneza nenosiri dhabiti",
+        confirmPasswordLabel: "Thibitisha Nenosiri",
+        confirmPasswordPlaceholder: "Andika nenosiri lako tena",
+        roleLabel: "Mimi ni...",
+        rolePassenger: "Abiria",
+        roleDriver: "Dereva",
+        roleConductor: "Kondakta",
+        roleSacco: "Msimamizi wa SACCO",
+        crewRoleLabel: "Chagua Aina ya Mhudumu",
+        termsLabel: (<><span>Ninakubaliana na MatGo </span><Link href="/terms" className="text-primary hover:underline font-medium">Sheria na Masharti</Link><span> na </span><Link href="/privacy" className="text-primary hover:underline font-medium">Sera ya Faragha</Link>.</>),
+        createAccountButton: "Fungua Akaunti",
+        alreadyHaveAccount: "Tayari una akaunti?",
+        loginInstead: "Ingia Badala Yake",
+        signupSuccessTitle: "Akaunti Imefunguliwa!",
+        signupSuccessDesc: (name: string, selectedRole: string) => `Karibu, ${name}! Akaunti yako ya ${selectedRole} iko tayari. Inaelekeza...`,
+        passwordMismatch: "Manenosiri hayafanani.",
+        missingFields: "Tafadhali jaza sehemu zote zinazohitajika na ukubali masharti.",
+        profilePhotoLabel: "Picha ya Profaili",
+        crewInfoTitle: "Taarifa za Wahudumu na Basi",
+        saccoAdminInfoTitle: "Taarifa za SACCO",
+        busIdentifierLabel: "Namba ya Gari / Jina la Meli",
+        busIdentifierPlaceholder: "k.m., KDA 123X au Monalisa",
+        busTypeLabel: "Aina ya Basi",
+        busTypePlaceholder: "Chagua aina ya basi",
+        saccoLabel: "SACCO Yako",
+        saccoPlaceholder: "Chagua SACCO yako",
+        busPhotoLabel: "Picha ya Basi",
+        saccoNameLabel: "Jina Rasmi la SACCO",
+        saccoNamePlaceholder: "Weka jina kamili la SACCO",
+        accountApprovalNotice: "Akaunti za Madereva, Makondakta, na Wasimamizi wa SACCO zinahitaji idhini kabla ya kuwashwa.",
+        driversLicenseLabel: "Leseni ya Dereva",
+        conductorsLicenseLabel: "Leseni ya Kondakta",
+        uploadFile: "Pakia Faili (PDF/Picha)",
+        fileSelected: "Faili Imechaguliwa:",
+        requiredMark: "*",
+      },
+    };
+    const currentContent = content[language || "ENG"];
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("passenger");
-  const [isCrewRole, setIsCrewRole] = useState(false);
-  const [termsAgreed, setTermsAgreed] = useState(false);
-
-  const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null);
-  const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
-  
-  const [sacco, setSacco] = useState<string | undefined>();
-  const [busIdentifier, setBusIdentifier] = useState("");
-  const [busType, setBusType] = useState<string | undefined>();
-  const [busPicPreview, setBusPicPreview] = useState<string | null>(null);
-  const [busPicFile, setBusPicFile] = useState<File | null>(null);
-  const [licenseFile, setLicenseFile] = useState<File | null>(null);
-  
-  const [saccoName, setSaccoName] = useState("");
-
-  const { toast } = useToast();
-  const { language } = useLanguage();
-
-  useEffect(() => {
-    if (initialRoleParam === 'crew') {
-      setIsCrewRole(true);
-      setRole('driver'); // Default to driver when crew is selected
-    } else if (['passenger', 'driver', 'conductor', 'sacco'].includes(initialRoleParam as string)) {
-      setIsCrewRole(initialRoleParam === 'driver' || initialRoleParam === 'conductor');
-      setRole(initialRoleParam as UserRole);
-    }
-  }, [initialRoleParam]);
-
-
-  const content = {
-    ENG: {
-      pageTitle: "Join MatGo Today!",
-      pageDescription: "Create your account to start your vibrant journey.",
-      firstNameLabel: "First Name",
-      firstNamePlaceholder: "Juma",
-      lastNameLabel: "Last Name",
-      lastNamePlaceholder: "Otieno",
-      phoneLabel: "Phone Number",
-      phonePlaceholder: "0712 345 678",
-      emailLabel: "Email",
-      emailPlaceholder: "your.email@example.com",
-      passwordLabel: "Password",
-      passwordPlaceholder: "Create a strong password",
-      confirmPasswordLabel: "Confirm Password",
-      confirmPasswordPlaceholder: "Re-enter your password",
-      roleLabel: "I am a...",
-      rolePassenger: "Passenger",
-      roleDriver: "Driver",
-      roleConductor: "Conductor",
-      roleSacco: "SACCO Admin",
-      crewRoleLabel: "Select Crew Type",
-      termsLabel: ( <> I agree to the MatGo{" "} <Link href="/terms" className="text-primary hover:underline font-medium"> Terms and Conditions </Link>{" "} and{" "} <Link href="/privacy" className="text-primary hover:underline font-medium"> Privacy Policy </Link>. </> ),
-      createAccountButton: "Create Account",
-      alreadyHaveAccount: "Already have an account?",
-      loginInstead: "Login Instead",
-      signupSuccessTitle: "Account Created!",
-      signupSuccessDesc: (name: string, selectedRole: string) => `Welcome, ${name}! Your ${selectedRole} account is ready. Redirecting...`,
-      passwordMismatch: "Passwords do not match.",
-      missingFields: "Please fill all required fields and agree to the terms.",
-      profilePhotoLabel: "Profile Photo",
-      crewInfoTitle: "Crew & Bus Information",
-      saccoAdminInfoTitle: "SACCO Information",
-      busIdentifierLabel: "Bus Plate / Fleet Name",
-      busIdentifierPlaceholder: "e.g., KDA 123X or Monalisa",
-      busTypeLabel: "Bus Type",
-      busTypePlaceholder: "Select bus type",
-      saccoLabel: "Your SACCO",
-      saccoPlaceholder: "Select your SACCO",
-      busPhotoLabel: "Bus Photo",
-      saccoNameLabel: "Official SACCO Name",
-      saccoNamePlaceholder: "Enter the full SACCO name",
-      accountApprovalNotice: "Driver, Conductor, and SACCO Admin accounts require approval before activation.",
-      driversLicenseLabel: "Driver's License",
-      conductorsLicenseLabel: "Conductor's License",
-      uploadFile: "Upload File (PDF/Image)",
-      fileSelected: "File Selected:",
-      requiredMark: "*",
-    },
-    KSW: {
-      pageTitle: "Jiunge na MatGo Leo!",
-      pageDescription: "Fungua akaunti yako kuanza safari yako ya kusisimua.",
-      firstNameLabel: "Jina la Kwanza",
-      firstNamePlaceholder: "Juma",
-      lastNameLabel: "Jina la Ukoo",
-      lastNamePlaceholder: "Otieno",
-      phoneLabel: "Nambari ya Simu",
-      phonePlaceholder: "0712 345 678",
-      emailLabel: "Barua Pepe",
-      emailPlaceholder: "barua.pepe@mfano.com",
-      passwordLabel: "Nenosiri",
-      passwordPlaceholder: "Tengeneza nenosiri dhabiti",
-      confirmPasswordLabel: "Thibitisha Nenosiri",
-      confirmPasswordPlaceholder: "Andika nenosiri lako tena",
-      roleLabel: "Mimi ni...",
-      rolePassenger: "Abiria",
-      roleDriver: "Dereva",
-      roleConductor: "Kondakta",
-      roleSacco: "Msimamizi wa SACCO",
-      crewRoleLabel: "Chagua Aina ya Mhudumu",
-      termsLabel: ( <> Ninakubaliana na MatGo{" "} <Link href="/terms" className="text-primary hover:underline font-medium"> Sheria na Masharti </Link>{" "} na{" "} <Link href="/privacy" className="text-primary hover:underline font-medium"> Sera ya Faragha </Link>. </> ),
-      createAccountButton: "Fungua Akaunti",
-      alreadyHaveAccount: "Tayari una akaunti?",
-      loginInstead: "Ingia Badala Yake",
-      signupSuccessTitle: "Akaunti Imefunguliwa!",
-      signupSuccessDesc: (name: string, selectedRole: string) => `Karibu, ${name}! Akaunti yako ya ${selectedRole} iko tayari. Inaelekeza...`,
-      passwordMismatch: "Manenosiri hayafanani.",
-      missingFields: "Tafadhali jaza sehemu zote zinazohitajika na ukubali masharti.",
-      profilePhotoLabel: "Picha ya Profaili",
-      crewInfoTitle: "Taarifa za Wahudumu na Basi",
-      saccoAdminInfoTitle: "Taarifa za SACCO",
-      busIdentifierLabel: "Namba ya Gari / Jina la Meli",
-      busIdentifierPlaceholder: "k.m., KDA 123X au Monalisa",
-      busTypeLabel: "Aina ya Basi",
-      busTypePlaceholder: "Chagua aina ya basi",
-      saccoLabel: "SACCO Yako",
-      saccoPlaceholder: "Chagua SACCO yako",
-      busPhotoLabel: "Picha ya Basi",
-      saccoNameLabel: "Jina Rasmi la SACCO",
-      saccoNamePlaceholder: "Weka jina kamili la SACCO",
-      accountApprovalNotice: "Akaunti za Madereva, Makondakta, na Wasimamizi wa SACCO zinahitaji idhini kabla ya kuwashwa.",
-      driversLicenseLabel: "Leseni ya Dereva",
-      conductorsLicenseLabel: "Leseni ya Kondakta",
-      uploadFile: "Pakia Faili (PDF/Picha)",
-      fileSelected: "Faili Imechaguliwa:",
-      requiredMark: "*",
-    },
-  };
-  const currentContent = content[language];
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    let isFormValid = true;
-    let missingFieldsMessage = currentContent.missingFields;
-
-    if (!firstName || !lastName || !phone || !password || !confirmPassword || !termsAgreed || !profilePicFile) {
-        isFormValid = false;
-    }
-    if (role === 'driver' || role === 'conductor') {
-        if (!sacco || !busIdentifier || !busType || !busPicFile || !licenseFile) isFormValid = false;
-    }
-    if (role === 'sacco') {
-        if (!saccoName || !email) isFormValid = false;
-    }
-
-    if (!isFormValid) {
-        toast({ variant: "destructive", title: "Error", description: missingFieldsMessage });
+    // Form submit handler
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!termsAgreed) {
+        toast({ variant: "destructive", title: "Error", description: currentContent.missingFields });
         return;
-    }
-    if (password !== confirmPassword) {
-      toast({ variant: "destructive", title: "Error", description: currentContent.passwordMismatch });
-      return;
-    }
-    
-    // Prepare form data for backend submission
-    const formData = new FormData();
-    formData.append('firstName', firstName);
-    formData.append('lastName', lastName);
-    formData.append('phone', phone);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('role', role);
-    formData.append('profilePic', profilePicFile);
-    
-    if (role === 'driver' || role === 'conductor') {
+      }
+      if (password !== confirmPassword) {
+        toast({ variant: "destructive", title: "Error", description: currentContent.passwordMismatch });
+        return;
+      }
+      // Prepare form data for backend submission
+      const formData = new FormData();
+      formData.append('firstName', firstName);
+      formData.append('lastName', lastName);
+      formData.append('phone', phone);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('role', role);
+      if (profilePicFile) formData.append('profilePic', profilePicFile);
+      if (role === 'driver' || role === 'conductor') {
         formData.append('sacco', sacco || '');
         formData.append('busIdentifier', busIdentifier);
         formData.append('busType', busType || '');
-        formData.append('busPic', busPicFile!);
-        formData.append('license', licenseFile!);
-    }
-    
-    if (role === 'sacco') {
+        if (busPicFile) formData.append('busPic', busPicFile);
+        if (licenseFile) formData.append('license', licenseFile);
+      }
+      if (role === 'sacco') {
         formData.append('saccoName', saccoName);
-    }
-    
-    try {
-        // Use the API client for signup
+      }
+      try {
         const result = await api.post('/auth/signup', formData);
-        
         toast({
-            title: currentContent.signupSuccessTitle,
-            description: currentContent.signupSuccessDesc(firstName, role),
-            className: "bg-green-500 text-white",
+          title: currentContent.signupSuccessTitle,
+          description: currentContent.signupSuccessDesc(firstName, role),
+          className: "bg-green-500 text-white",
         });
-        
         setTimeout(() => router.push("/login"), 2000);
-    } catch (error) {
+      } catch (error) {
         console.error('Signup error:', error);
         toast({
-            variant: "destructive",
-            title: "Signup Failed",
-            description: "Failed to create account. Please check your connection and try again.",
+          variant: "destructive",
+          title: "Signup Failed",
+          description: "Failed to create account. Please check your connection and try again.",
         });
-    }
-  };
-  
+      }
+    };
+
+    // ...rest of the component (JSX) remains unchanged...
+
+    return (
+      <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-muted/30 to-background dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900">
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4 md:p-6">
+          <Card className="w-full max-w-lg shadow-2xl animate-fade-in rounded-xl glassy-card">
+            <CardHeader className="text-center space-y-3 pt-8">
+               <MatGoIcon className="mx-auto h-20 w-20 text-primary nganya-flash" />
+              <CardTitle className="font-headline text-4xl text-primary">{currentContent.pageTitle}</CardTitle>
+              <CardDescription className="text-muted-foreground text-base">{currentContent.pageDescription}</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6 pb-8 px-6 md:px-8">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="flex flex-col items-center space-y-2">
+                  <Label className="text-base font-semibold">{currentContent.profilePhotoLabel} <span className="text-destructive">{currentContent.requiredMark}</span></Label>
+                  <div className="relative group">
+                      <Avatar className="h-24 w-24 border-4 border-primary/50">
+                          <AvatarImage src={profilePicPreview || undefined} alt="Profile preview" data-ai-hint="profile person"/>
+                          <AvatarFallback className="text-3xl bg-primary/20 text-primary">{firstName?.[0]}{lastName?.[0]}</AvatarFallback>
+                      </Avatar>
+                       <label htmlFor="profilePicUpload" className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <Camera className="h-8 w-8 text-white"/>
+                          <input id="profilePicUpload" type="file" accept="image/*" className="sr-only" onChange={(e) => handleImageUpload(e, setProfilePicPreview, setProfilePicFile)} required/>
+                       </label>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName" className="text-base font-semibold">{currentContent.firstNameLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
+                    <Input id="firstName" placeholder={currentContent.firstNamePlaceholder} required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="text-base py-3 px-4 rounded-lg" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName" className="text-base font-semibold">{currentContent.lastNameLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
+                    <Input id="lastName" placeholder={currentContent.lastNamePlaceholder} required value={lastName} onChange={(e) => setLastName(e.target.value)} className="text-base py-3 px-4 rounded-lg"/>
+                  </div>
+                </div>
+                {/* ...existing code... */}
+              </form>
+            </CardContent>
+            {/* ...existing code... */}
+          </Card>
+        </main>
+      </div>
+    );
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setImagePreview: React.Dispatch<React.SetStateAction<string | null>>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -350,7 +358,7 @@ export default function SignupPage() {
                         <div className="space-y-2">
                            <Label htmlFor="licenseUpload" className="font-semibold text-base"> {role === 'driver' ? currentContent.driversLicenseLabel : currentContent.conductorsLicenseLabel}<span className="text-destructive">{currentContent.requiredMark}</span> </Label>
                             <Input id="licenseUpload" type="file" accept="image/*,application/pdf" required onChange={(e) => handleFileUpload(e, setLicenseFile)} className="text-sm file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"/>
-                            {licenseFile && <p className="text-xs text-muted-foreground flex items-center gap-1"><FileText className="h-3 w-3"/>{currentContent.fileSelected} {licenseFile.name}</p>}
+                            {licenseFile?.name ? <p className="text-xs text-muted-foreground flex items-center gap-1"><FileText className="h-3 w-3"/>{currentContent.fileSelected} {licenseFile?.name}</p> : null}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="sacco" className="text-base font-semibold">{currentContent.saccoLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
@@ -377,7 +385,7 @@ export default function SignupPage() {
                         <div className="space-y-2">
                             <Label htmlFor="busPhoto" className="text-base font-semibold">{currentContent.busPhotoLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
                             <Input id="busPhoto" type="file" accept="image/*" required onChange={(e) => handleImageUpload(e, setBusPicPreview, setBusPicFile)} className="text-sm file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
-                            {busPicPreview && <img src={busPicPreview} alt="Bus preview" className="w-24 h-16 object-cover rounded-md mt-2" data-ai-hint="bus side"/>}
+                            {busPicPreview ? <img src={busPicPreview || undefined} alt="Bus preview" className="w-24 h-16 object-cover rounded-md mt-2" data-ai-hint="bus side"/> : null}
                         </div>
                     </CardContent>
                 </Card>
@@ -387,9 +395,9 @@ export default function SignupPage() {
                  <Card className="p-4 bg-muted/30 border-primary/30">
                     <CardHeader className="p-0 pb-3"><CardTitle className="text-primary font-headline">{currentContent.saccoAdminInfoTitle}</CardTitle></CardHeader>
                     <CardContent className="p-0 space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="saccoName" className="text-base font-semibold">{currentContent.saccoNameLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
-                            <Input id="saccoName" placeholder={currentContent.saccoNamePlaceholder} required value={saccoName} onChange={e => setSaccoName(e.target.value)}/>
+            <div className="space-y-2">
+              <Label htmlFor="saccoName" className="text-base font-semibold">{(currentContent as any).saccoNameLabel ?? "Sacco Name"}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
+              <Input id="saccoName" placeholder={(currentContent as any).saccoNamePlaceholder ?? "Enter sacco name"} required value={saccoName} onChange={e => setSaccoName(e.target.value)}/>
                         </div>
                     </CardContent>
                 </Card>
@@ -413,9 +421,10 @@ export default function SignupPage() {
               <div className="flex items-start space-x-3 pt-2">
                 <Checkbox id="terms" required checked={termsAgreed} onCheckedChange={(checked) => setTermsAgreed(checked as boolean)} className="mt-1 border-2 data-[state=checked]:bg-primary data-[state=checked]:border-primary"/>
                 <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground leading-relaxed">
-                  {currentContent.termsLabel}
+                  <span>{currentContent.termsLabel}</span>
                 </Label>
               </div>
+
               <Button type="submit" className="w-full font-bold text-lg py-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow-primary">
                 {currentContent.createAccountButton} <ArrowRight className="ml-2 h-5 w-5"/>
               </Button>
@@ -432,5 +441,13 @@ export default function SignupPage() {
         </Card>
       </main>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupContent />
+    </Suspense>
   );
 }

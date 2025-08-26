@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, PlayCircle, StopCircle, ClipboardList, MessageSquare, Star } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
 import React, { useState, useEffect, useRef } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -14,14 +15,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-import { QRCodeCanvas } from "qrcode.react";
-// ...existing code...
-    name: string;
-    role: "Driver" | "Conductor" | "Dereva" | "Kondakta";
-    sacco: string;
-    busName: string;
-    busReg: string;
-    profilePic: string;
+
+import { useQRCodeScanner } from "@/hooks/useQRCodeScanner";
+
+interface CrewMember {
+  name: string;
+  role: "Driver" | "Conductor" | "Dereva" | "Kondakta";
+  sacco: string;
+  busName: string;
+  busReg: string;
+  profilePic: string;
   rating: number;
 }
 interface TripLog { id: string; date: string; route: string; startTime: string; endTime: string; passengers: number; fareCollected: number; }
