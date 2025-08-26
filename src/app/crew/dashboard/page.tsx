@@ -129,22 +129,25 @@ export default function CrewDashboardPage() {
                             }));
                             setTripLog(userTrips);
                         }
-                        
-                            }
+
+                        // Fetch SACCO messages
+                        const messagesResponse = await fetch('/api/messages/sacco', {
+                          headers: {
+                            'Authorization': token ? `Bearer ${token}` : ''
+                          }
                         });
-                        
+
                         if (messagesResponse.ok) {
-                            const messages = await messagesResponse.json();
-                            const formattedMessages = messages.map((msg: any) => ({
-                                id: msg.id,
-                                message: msg.content || msg.message,
-                                timestamp: msg.timestamp || msg.createdAt,
-                                sender: msg.sender || msg.senderName || 'SACCO Admin',
-                                isFromAdmin: msg.isFromAdmin || msg.sender === 'admin'
-                            }));
-                            setSaccoMessages(formattedMessages);
+                          const messages = await messagesResponse.json();
+                          const formattedMessages = messages.map((msg: any) => ({
+                            id: msg.id,
+                            message: msg.content || msg.message,
+                            timestamp: msg.timestamp || msg.createdAt,
+                            sender: msg.sender || msg.senderName || 'SACCO Admin',
+                            isFromAdmin: msg.isFromAdmin || msg.sender === 'admin'
+                          }));
+                          setSaccoMessages(formattedMessages);
                         }
-                        
                     } catch (error) {
                         console.error('Error fetching crew data:', error);
                         // Fallback to stored user data
