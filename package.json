@@ -44,7 +44,7 @@
     "html2pdf.js": "^0.10.3",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.475.0",
-    "next": "15.3.3",
+    "next": "^15.3.3",
     "next-themes": "^0.3.0",
     "patch-package": "^8.0.0",
     "qrcode.react": "^4.2.0",
@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.24",
     "@types/react-dom": "^18",
     "genkit-cli": "^1.8.0",
     "postcss": "^8",
