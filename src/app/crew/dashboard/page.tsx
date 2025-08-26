@@ -15,16 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
-import { useQRCodeScanner } from "@/hooks/useQRCodeScanner";
-
-interface CrewMember {
+// ...existing code...
     name: string;
     role: "Driver" | "Conductor" | "Dereva" | "Kondakta";
     sacco: string;
     busName: string;
     busReg: string;
     profilePic: string;
-    rating: number;
+  rating: number;
 }
 interface TripLog { id: string; date: string; route: string; startTime: string; endTime: string; passengers: number; fareCollected: number; }
 interface Waybill { tripId: string; route: string; departure: string; passengers: { seat: string; name: string; destination: string; }[]; }
@@ -48,8 +46,12 @@ export default function CrewDashboardPage() {
   const [currentRoute, setCurrentRoute] = useState("Ngong - Town"); // This would be dynamic
   const [passengerCount, setPassengerCount] = useState(0); 
 
-  const qrScannerRef = useRef(null);
-  const { scanQRCode, scannedData, error } = useQRCodeScanner(qrScannerRef);
+  // QR code scanner logic (dummy, to be replaced with real logic)
+  const handleScan = (data: string) => {
+    // Handle scanned QR code data here
+    // For now, do nothing
+  };
+  const { scanQRCode } = useQRCodeScanner(handleScan);
 
   useEffect(() => {
     const fetchData = async () => {
