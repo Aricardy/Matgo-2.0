@@ -187,7 +187,7 @@ export default function SosPage() {
       };
 
       // Send SOS alert to backend
-      const response = await fetch('http://localhost:5000/api/sos', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sos`, {
         method: 'POST',
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',

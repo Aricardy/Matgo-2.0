@@ -67,7 +67,7 @@ export default function SystemAdminDashboard() {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/auth/verify', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verify`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -107,7 +107,7 @@ export default function SystemAdminDashboard() {
       }
 
       // Verify token with backend
-      const response = await fetch('http://localhost:5000/api/auth/verify', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verify`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',

@@ -269,7 +269,7 @@ export default function ScanPage() {
     
       try {
         // Try to fetch bus details from backend
-        const response = await fetch(`http://localhost:5000/api/matatus/${busIdToFind}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/matatus/${busIdToFind}`, {
           headers: {
             'Authorization': token ? `Bearer ${token}` : ''
           }

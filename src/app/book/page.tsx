@@ -70,7 +70,7 @@ export default function BookingPage() {
         const token = localStorage.getItem('matgoToken');
         
         try {
-          const response = await fetch('http://localhost:5000/api/routes', {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/routes`, {
             headers: {
               'Authorization': token ? `Bearer ${token}` : ''
             }
@@ -173,7 +173,7 @@ export default function BookingPage() {
         const dateStr = format(selectedDate, 'yyyy-MM-dd');
         
         try {
-          const response = await fetch(`http://localhost:5000/api/booking/seats/${selectedRouteValue}/${dateStr}/${selectedTime}`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/booking/seats/${selectedRouteValue}/${dateStr}/${selectedTime}`, {
             headers: {
               'Authorization': token ? `Bearer ${token}` : ''
             }
@@ -445,7 +445,7 @@ export default function BookingPage() {
           tripType: language === 'KSW' ? "Safari Ndefu" : "Long Distance"
         };
 
-        fetch('http://localhost:5000/api/booking', {
+  fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/booking`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

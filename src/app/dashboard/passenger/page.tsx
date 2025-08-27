@@ -136,7 +136,7 @@ export default function PassengerDashboardPage() {
     // Fetch user profile from backend
     const token = localStorage.getItem('matgoToken');
     if (token) {
-      fetch('http://localhost:5000/api/auth/profile', {
+  fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(response => response.json())

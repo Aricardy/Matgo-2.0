@@ -95,7 +95,7 @@ export default function ProfilePage() {
       
       try {
         // Fetch user profile from backend
-        const profileResponse = await fetch('http://localhost:5000/api/users/profile', {
+  const profileResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/profile`, {
           headers: {
             'Authorization': token ? `Bearer ${token}` : ''
           }
@@ -109,7 +109,7 @@ export default function ProfilePage() {
             email: profile.email || defaultUser.email,
             phone: profile.phone || defaultUser.phone,
             nationalId: profile.nationalId || defaultUser.nationalId,
-            profilePic: profile.avatar ? `http://localhost:5000/uploads/avatars/${profile.avatar}` : defaultUser.profilePic,
+            profilePic: profile.avatar ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/avatars/${profile.avatar}` : defaultUser.profilePic,
           });
         } else {
           // Fallback to stored user data
@@ -121,7 +121,7 @@ export default function ProfilePage() {
               email: userData.email || defaultUser.email,
               phone: userData.phone || defaultUser.phone,
               nationalId: userData.nationalId || defaultUser.nationalId,
-              profilePic: userData.avatar ? `http://localhost:5000/uploads/avatars/${userData.avatar}` : defaultUser.profilePic,
+              profilePic: userData.avatar ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/avatars/${userData.avatar}` : defaultUser.profilePic,
             });
           } else {
             setUser(defaultUser);
@@ -129,7 +129,7 @@ export default function ProfilePage() {
         }
         
         // Fetch user's trip history/bookings
-        const bookingsResponse = await fetch('http://localhost:5000/api/bookings', {
+  const bookingsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bookings`, {
           headers: {
             'Authorization': token ? `Bearer ${token}` : ''
           }
@@ -171,7 +171,7 @@ export default function ProfilePage() {
             email: userData.email || defaultUser.email,
             phone: userData.phone || defaultUser.phone,
             nationalId: userData.nationalId || defaultUser.nationalId,
-            profilePic: userData.avatar ? `http://localhost:5000/uploads/avatars/${userData.avatar}` : defaultUser.profilePic,
+            profilePic: userData.avatar ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/avatars/${userData.avatar}` : defaultUser.profilePic,
           });
         } else {
           setUser(defaultUser);
@@ -295,7 +295,7 @@ export default function ProfilePage() {
     
     try {
       // Try to update profile via backend
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',
