@@ -271,7 +271,9 @@ export default function ScanPage() {
         // Try to fetch bus details from backend
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/matatus/${busIdToFind}`, {
           headers: {
-            'Authorization': token ? `Bearer ${token}` : ''
+            'Authorization': token ? `Bearer ${token}` : '',
+            'ngrok-skip-browser-warning': 'true',
+            'Accept': 'application/json'
           }
         });
       

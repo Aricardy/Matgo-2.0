@@ -80,15 +80,22 @@ export default function BookingPage() {
             const routes = await response.json();
             
             // Transform routes data to expected format
-            const transformedRoutes = routes.map((route: any) => ({
-              value: route.id || route.routeId,
-              label: route.name || route.route || route.destination,
-              price: parseFloat(route.price || route.fare || 2000),
-              stops: route.stops || route.majorStops || [],
-              image: route.image || "https://placehold.co/800x250.png",
-              imageHint: route.imageHint || "bus exterior",
-              sacco: route.sacco || route.saccoName || "MatGo Fleet"
-            }));
+            const transformedRoutes = routes.map((route: any) => {
+              const routeId = route.id || route.routeId;
+              const localImage = routeId ? `/images/book/${routeId}.png` : "/images/book/default.png";
+              const backendImage = route.image as string | undefined;
+              const useLocalInsteadOfPlaceholder = backendImage && backendImage.includes('placehold.co');
+              const effectiveImage = useLocalInsteadOfPlaceholder ? localImage : (backendImage || localImage);
+              return ({
+                value: routeId,
+                label: route.name || route.route || route.destination,
+                price: parseFloat(route.price || route.fare || 2000),
+                stops: route.stops || route.majorStops || [],
+                image: effectiveImage,
+                imageHint: route.imageHint || "bus exterior",
+                sacco: route.sacco || route.saccoName || "MatGo Fleet"
+              });
+            });
             
             setLongDistanceRoutes(transformedRoutes);
           } else {
@@ -99,7 +106,7 @@ export default function BookingPage() {
                 label: "Nairobi ↔ Mombasa",
                 price: 2200,
                 stops: ["Nairobi", "Machakos", "Mtito Andei", "Voi", "Mariakani", "Mombasa"],
-                image: "https://placehold.co/800x250.png",
+                image: "/images/book/nairobi-mombasa.png",
                 imageHint: "mombasa road bus",
                 sacco: "Mombasa Raha"
               },
@@ -108,7 +115,7 @@ export default function BookingPage() {
                 label: "Nairobi ↔ Kisumu",
                 price: 1800,
                 stops: ["Nairobi", "Naivasha", "Nakuru", "Kericho", "Kisumu"],
-                image: "https://placehold.co/800x250.png",
+                image: "/images/book/nairobi-kisumu.png",
                 imageHint: "kisumu highway bus",
                 sacco: "Kisumu Express"
               },
@@ -117,7 +124,7 @@ export default function BookingPage() {
                 label: "Nairobi ↔ Eldoret",
                 price: 1500,
                 stops: ["Nairobi", "Naivasha", "Nakuru", "Eldoret"],
-                image: "https://placehold.co/800x250.png",
+                image: "/images/book/nairobi-eldoret.png",
                 imageHint: "eldoret route bus",
                 sacco: "Eldoret Shuttle"
               }
@@ -140,7 +147,7 @@ export default function BookingPage() {
               label: "Nairobi ↔ Mombasa",
               price: 2200,
               stops: ["Nairobi", "Machakos", "Mtito Andei", "Voi", "Mariakani", "Mombasa"],
-              image: "https://placehold.co/800x250.png",
+              image: "/images/book/nairobi-mombasa.png",
               imageHint: "mombasa road bus",
               sacco: "Mombasa Raha"
             },
@@ -149,7 +156,7 @@ export default function BookingPage() {
               label: "Nairobi ↔ Kisumu",
               price: 1800,
               stops: ["Nairobi", "Naivasha", "Nakuru", "Kericho", "Kisumu"],
-              image: "https://placehold.co/800x250.png",
+              image: "/images/book/nairobi-kisumu.png",
               imageHint: "kisumu highway bus",
               sacco: "Kisumu Express"
             }
