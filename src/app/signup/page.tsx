@@ -201,51 +201,7 @@ function SignupContent() {
       }
     };
 
-    // ...rest of the component (JSX) remains unchanged...
-
-    return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-muted/30 to-background dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900">
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4 md:p-6">
-          <Card className="w-full max-w-lg shadow-2xl animate-fade-in rounded-xl glassy-card">
-            <CardHeader className="text-center space-y-3 pt-8">
-               <MatGoIcon className="mx-auto h-20 w-20 text-primary nganya-flash" />
-              <CardTitle className="font-headline text-4xl text-primary">{currentContent.pageTitle}</CardTitle>
-              <CardDescription className="text-muted-foreground text-base">{currentContent.pageDescription}</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 pb-8 px-6 md:px-8">
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="flex flex-col items-center space-y-2">
-                  <Label className="text-base font-semibold">{currentContent.profilePhotoLabel} <span className="text-destructive">{currentContent.requiredMark}</span></Label>
-                  <div className="relative group">
-                      <Avatar className="h-24 w-24 border-4 border-primary/50">
-                          <AvatarImage src={profilePicPreview || undefined} alt="Profile preview" data-ai-hint="profile person"/>
-                          <AvatarFallback className="text-3xl bg-primary/20 text-primary">{firstName?.[0]}{lastName?.[0]}</AvatarFallback>
-                      </Avatar>
-                       <label htmlFor="profilePicUpload" className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <Camera className="h-8 w-8 text-white"/>
-                          <input id="profilePicUpload" type="file" accept="image/*" className="sr-only" onChange={(e) => handleImageUpload(e, setProfilePicPreview, setProfilePicFile)} required/>
-                       </label>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-base font-semibold">{currentContent.firstNameLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
-                    <Input id="firstName" placeholder={currentContent.firstNamePlaceholder} required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="text-base py-3 px-4 rounded-lg" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-base font-semibold">{currentContent.lastNameLabel}<span className="text-destructive">{currentContent.requiredMark}</span></Label>
-                    <Input id="lastName" placeholder={currentContent.lastNamePlaceholder} required value={lastName} onChange={(e) => setLastName(e.target.value)} className="text-base py-3 px-4 rounded-lg"/>
-                  </div>
-                </div>
-                {/* ...existing code... */}
-              </form>
-            </CardContent>
-            {/* ...existing code... */}
-          </Card>
-        </main>
-      </div>
-    );
+  // ...existing code...
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setImagePreview: React.Dispatch<React.SetStateAction<string | null>>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -273,8 +229,8 @@ function SignupContent() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-muted/30 to-background dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900">
       <Header />
-      <main className="flex flex-1 items-center justify-center p-4 md:p-6">
-        <Card className="w-full max-w-lg shadow-2xl animate-fade-in rounded-xl glassy-card">
+      <main className="flex flex-1 items-center justify-center p-4 md:p-6 min-h-screen">
+        <Card className="w-full max-w-lg shadow-2xl animate-fade-in rounded-xl glassy-card overflow-y-auto max-h-[90vh]">
           <CardHeader className="text-center space-y-3 pt-8">
              <MatGoIcon className="mx-auto h-20 w-20 text-primary nganya-flash" />
             <CardTitle className="font-headline text-4xl text-primary">{currentContent.pageTitle}</CardTitle>
