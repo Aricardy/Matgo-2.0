@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 
 export default function BookingPage() {
@@ -15,11 +16,11 @@ export default function BookingPage() {
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 
-	const handleChange = e => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = async e => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setLoading(true);
 		setError('');
