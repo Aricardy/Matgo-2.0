@@ -89,7 +89,7 @@ export default function LoginPage() {
         : { phone: username, password };
 
       console.log('Sending login request to backend...', loginPayload);
-  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, 
+  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
         loginPayload,
         {
           headers: {
