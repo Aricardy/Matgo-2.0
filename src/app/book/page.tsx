@@ -1,3 +1,6 @@
+// import React, { useState } from 'react'; // Removed duplicate import
+
+// Removed duplicate default export BookPage function
 
 "use client";
 
@@ -39,6 +42,7 @@ interface Seat {
 }
 
 export default function BookingPage() {
+    const [mpesaMessage, setMpesaMessage] = useState("");
   const [longDistanceRoutes, setLongDistanceRoutes] = useState<RouteDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -265,9 +269,9 @@ export default function BookingPage() {
       time: "Time:",
       seats: "Seat(s):",
       passengers: "Passengers:",
-      mpesaPaymentTitle: "M-Pesa Payment",
-      mpesaPaymentDescription: (price: number, seat: string) => `To complete your booking, please send Ksh ${price.toLocaleString()} to PayBill MatGo (0105127824 or 0116302317), Account ${seat || "YOUR_SEAT"}. Your seat(s) will be reserved upon payment confirmation. Click "Confirm Payment" after sending.`,
-      paymentConfirmedToast: "Payment Confirmed",
+mpesaPaymentTitle: "M-Pesa Payment",
+mpesaPaymentDescription: (price: number, seat: string) => `To complete your booking, please send Ksh ${price.toLocaleString()} to Till Number MatGo (6201430), Account ${seat || "YOUR_SEAT"}. Your seat(s) will be reserved upon payment confirmation. Click "Confirm Payment" after sending.`,
+    paymentConfirmedToast: "Payment Confirmed",
       paymentConfirmedToastDesc: "Your booking is successful! Prepare for an awesome trip.",
       bookingConfirmedTitle: "Booking Confirmed!",
       bookingConfirmedDescription: "Your Nganya adventure awaits!",
@@ -314,7 +318,7 @@ export default function BookingPage() {
       seats: "Kiti/Viti:",
       passengers: "Abiria:",
       mpesaPaymentTitle: "Malipo ya M-Pesa",
-      mpesaPaymentDescription: (price: number, seat: string) => `Kukamilisha malipo, tafadhali tuma Ksh ${price.toLocaleString()} kwenda PayBill MatGo (0105127824 au 0116302317), Akaunti ${seat || "KITI_CHAKO"}. Kiti/viti vyako vitahifadhiwa baada ya uthibitisho wa malipo. Bofya "Thibitisha Malipo" baada ya kutuma.`,
+  mpesaPaymentDescription: (price: number, seat: string) => `Kukamilisha malipo, tafadhali tuma Ksh ${price.toLocaleString()} kwenda Till Number MatGo (6201430), Akaunti ${seat || "KITI_CHAKO"}. Kiti/viti vyako vitahifadhiwa baada ya uthibitisho wa malipo. Bofya "Thibitisha Malipo" baada ya kutuma.`,
       paymentConfirmedToast: "Malipo Yamethibitishwa (Mfumo)",
       paymentConfirmedToastDesc: "Uhifadhi wako umefaulu! Jitayarishe kwa safari nzuri.",
       back: "Rudi Nyuma",
@@ -733,6 +737,17 @@ export default function BookingPage() {
                     {currentContent.mpesaPaymentDescription(totalPrice, selectedSeatsList[0])}
                   </AlertDescription>
                 </Alert>
+              <div className="mt-6">
+                <Label htmlFor="mpesaMessage" className="font-semibold text-base">M-Pesa Confirmation Message</Label>
+                <Input
+                  id="mpesaMessage"
+                  type="text"
+                  value={mpesaMessage}
+                  onChange={e => setMpesaMessage(e.target.value)}
+                  placeholder={language === 'KSW' ? "Weka ujumbe wa M-Pesa hapa" : "Paste your M-Pesa message here"}
+                  className="mt-2"
+                />
+              </div>
              </CardContent>
            </Card>
         )}
@@ -763,6 +778,7 @@ export default function BookingPage() {
           {step === 3 && 
             <Button 
               onClick={proceedToNextStep} 
+              disabled={!mpesaMessage}
               className="transition-transform hover:scale-105 py-3 px-6 text-base rounded-lg bg-green-600 hover:bg-green-700 text-white btn-glow-accent ml-auto"
             >
               {currentContent.confirmPayButton}
