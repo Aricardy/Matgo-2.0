@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     }
 
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/matatus`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/matatus`, {
       headers: {
         'Authorization': token,
         'Accept': 'application/json'

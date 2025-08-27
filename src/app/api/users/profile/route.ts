@@ -13,7 +13,7 @@ export async function GET(req: Request) {
       );
     }
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile`, {
       headers: {
         'Authorization': token,
         'Accept': 'application/json'
@@ -49,7 +49,7 @@ export async function PUT(req: Request) {
 
     const body = await req.json();
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile`, {
       method: 'PUT',
       headers: {
         'Authorization': token,

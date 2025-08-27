@@ -34,7 +34,7 @@ async function verifyToken(): Promise<boolean> {
     const token = getAuthToken();
     if (!token) return false;
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',
@@ -90,7 +90,7 @@ export async function requireAuth(redirectTo = '/login', requireAdmin = false): 
       }
 
       // Verify token
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
@@ -100,7 +100,7 @@ export async function requireAuth(redirectTo = '/login', requireAdmin = false): 
       if (response.status === 401) {
         // Token is invalid, try to refresh it
         try {
-          const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {
+          const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`, {
             method: 'POST',
             credentials: 'include',
             headers: {

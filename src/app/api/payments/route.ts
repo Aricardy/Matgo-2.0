@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         : `254${phoneNumber}`;
 
     // Call backend M-Pesa API
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/mpesa/pay`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/mpesa/pay`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

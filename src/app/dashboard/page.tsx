@@ -15,7 +15,7 @@ export default function DashboardRedirectPage() {
   useEffect(() => {
     async function checkAuth() {
       try {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const response = await fetch(`${apiUrl}/auth/me`, { credentials: "include" });
         if (!response.ok) throw new Error("Not authenticated");
 
