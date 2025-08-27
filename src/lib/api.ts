@@ -20,7 +20,7 @@ async function refreshAccessToken() {
   isRefreshing = true;
   
   try {
-    const response = await fetch(`${API_URL}/auth/refresh-token`, {
+  const response = await fetch(`${API_URL}/api/auth/refresh-token`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -66,7 +66,7 @@ async function refreshAndRetry(endpoint: string, options: RequestInit): Promise<
     if (!refreshToken) throw new Error('No refresh token available');
 
     // Request a new access token
-    const response = await fetch(`${API_URL}/auth/refresh-token`, {
+  const response = await fetch(`${API_URL}/api/auth/refresh-token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -94,7 +94,7 @@ async function refreshAndRetry(endpoint: string, options: RequestInit): Promise<
 // Update apiFetch to handle token refresh
 export async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<any> {
   // Skip token for login/register endpoints only, not all auth endpoints
-  const isPublicAuthEndpoint = endpoint === '/auth/login' || endpoint === '/auth/register' || endpoint === '/refresh-token';
+  const isPublicAuthEndpoint = endpoint === '/api/auth/login' || endpoint === '/api/auth/register' || endpoint === '/api/auth/refresh-token';
   
   // Get the current token
   let token = localStorage.getItem('matgoToken');
@@ -113,7 +113,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}): Pro
 
   try {
     // Make the initial request
-    let response = await fetch(`${API_URL}${endpoint}`, {
+  let response = await fetch(`${API_URL}${endpoint.startsWith('/api/') ? '' : '/api/'}${endpoint.replace(/^\/api\//, '')}`, {
       ...options,
       headers,
       credentials: 'include',

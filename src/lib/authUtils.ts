@@ -23,7 +23,7 @@ export const refreshAuthToken = async (): Promise<string | null> => {
 
     // Start a new refresh
     refreshPromise = (async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh-token`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -71,7 +71,7 @@ export const verifyToken = async (): Promise<boolean> => {
     const token = localStorage.getItem('matgoToken');
     if (!token) return false;
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verify`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json'

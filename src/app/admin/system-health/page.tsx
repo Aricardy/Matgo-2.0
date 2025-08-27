@@ -31,7 +31,7 @@ export default function SystemHealthPage() {
             
             try {
                 // Fetch system health from backend
-                const response = await fetch('/api/system/health', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/system/health`, {
                     headers: {
                         'Authorization': token ? `Bearer ${token}` : ''
                     }
@@ -70,10 +70,10 @@ export default function SystemHealthPage() {
             try {
                 // Test API endpoints
                 const [statsResponse, usersResponse] = await Promise.all([
-                    fetch('/api/stats', {
+                    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/stats`, {
                         headers: { 'Authorization': token ? `Bearer ${token}` : '' }
                     }),
-                    fetch('/api/users', {
+                    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`, {
                         headers: { 'Authorization': token ? `Bearer ${token}` : '' }
                     })
                 ]);

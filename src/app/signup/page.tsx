@@ -184,7 +184,7 @@ function SignupContent() {
         formData.append('saccoName', saccoName);
       }
       try {
-        const result = await api.post('/auth/signup', formData);
+  const result = await api.post('/api/auth/signup', formData);
         toast({
           title: currentContent.signupSuccessTitle,
           description: currentContent.signupSuccessDesc(firstName, role),

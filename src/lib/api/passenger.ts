@@ -1,6 +1,6 @@
 // Trip Booking API
 export const fetchRoutes = async () => {
-  const { data } = await axios.get('/api/routes');
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/routes`);
   return data;
 };
 
@@ -11,7 +11,7 @@ export const bookTrip = async (booking: {
   departure_date: string;
   return_date?: string | null;
 }) => {
-  const { data } = await axios.post('/api/bookings', booking);
+  const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bookings`, booking);
   return data;
 };
 
@@ -20,62 +20,62 @@ export const payForTrip = async (payment: {
   amount: number;
   payment_method: 'MPESA' | 'CARD' | 'CASH';
 }) => {
-  const { data } = await axios.post('/api/payments', payment);
+  const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payments`, payment);
   return data;
 };
 // Emergency Contacts API
 export const fetchEmergencyContacts = async (userId: string) => {
-  const { data } = await axios.get(`/api/emergency-contacts/${userId}`);
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/emergency-contacts/${userId}`);
   return data;
 };
 
 export const addEmergencyContact = async (contact: { user_id: string; name: string; phone_number: string }) => {
-  const { data } = await axios.post('/api/emergency-contacts', contact);
+  const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/emergency-contacts`, contact);
   return data;
 };
 
 export const deleteEmergencyContact = async (contactId: string) => {
-  const { data } = await axios.delete(`/api/emergency-contacts/${contactId}`);
+  const { data } = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/emergency-contacts/${contactId}`);
   return data;
 };
 import axios from 'axios';
 
 export const fetchPassengerProfile = async (id: string, token: string) => {
-  const { data } = await axios.get(`/api/users/passenger/${id}/profile`, {
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/passenger/${id}/profile`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 };
 
 export const updatePassengerProfile = async (id: string, profile: any, token: string) => {
-  const { data } = await axios.put(`/api/users/passenger/${id}/profile`, profile, {
+  const { data } = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/passenger/${id}/profile`, profile, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 };
 
 export const submitTripFeedback = async (tripId: string, feedback: any, token: string) => {
-  const { data } = await axios.post(`/api/trips/${tripId}/feedback`, feedback, {
+  const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/trips/${tripId}/feedback`, feedback, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 };
 
 export const fetchPassengerNotifications = async (id: string, token: string) => {
-  const { data } = await axios.get(`/api/users/passenger/${id}/notifications`, {
+  const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/passenger/${id}/notifications`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 };
 
 export const markAllAsRead = async (id: string, token: string) => {
-  await axios.post(`/api/notifications/mark-read`, { userId: id }, {
+  await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications/mark-read`, { userId: id }, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
 
 export const clearAllNotifications = async (id: string, token: string) => {
-  await axios.delete(`/api/users/passenger/${id}/notifications`, {
+  await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/passenger/${id}/notifications`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };

@@ -31,7 +31,7 @@ export default function SaccosPage() {
             
             try {
                 // Fetch SACCOs from backend
-                const response = await fetch('/api/saccos', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/saccos`, {
                     headers: {
                         'Authorization': token ? `Bearer ${token}` : ''
                     }
@@ -46,7 +46,7 @@ export default function SaccosPage() {
                         
                         // Fetch bus count for this SACCO
                         try {
-                            const vehiclesResponse = await fetch('/api/vehicles', {
+                            const vehiclesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/vehicles`, {
                                 headers: {
                                     'Authorization': token ? `Bearer ${token}` : ''
                                 }

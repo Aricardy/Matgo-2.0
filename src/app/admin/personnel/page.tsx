@@ -34,12 +34,12 @@ export default function PersonnelPage() {
             try {
                 // Fetch drivers and conductors from backend
                 const [driversResponse, conductorsResponse] = await Promise.all([
-                    fetch('/api/drivers', {
+                    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/drivers`, {
                         headers: {
                             'Authorization': token ? `Bearer ${token}` : ''
                         }
                     }),
-                    fetch('/api/conductors', {
+                    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/conductors`, {
                         headers: {
                             'Authorization': token ? `Bearer ${token}` : ''
                         }

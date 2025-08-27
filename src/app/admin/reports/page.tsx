@@ -35,7 +35,7 @@ export default function ReportsPage() {
             
             try {
                 // Fetch reports from backend
-                const response = await fetch('/api/reports', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/reports`, {
                     headers: {
                         'Authorization': token ? `Bearer ${token}` : ''
                     }

@@ -179,7 +179,7 @@ export default function SosPage() {
     const storedUser = localStorage.getItem('matgoUser');
     
     try {
-      const sosData = {
+  const sosData = {
         location: location,
         timestamp: new Date().toISOString(),
         userInfo: storedUser ? JSON.parse(storedUser) : null,
@@ -187,7 +187,7 @@ export default function SosPage() {
       };
 
       // Send SOS alert to backend
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sos`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sos`, {
         method: 'POST',
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',

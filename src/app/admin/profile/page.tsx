@@ -37,7 +37,7 @@ export default function AdminProfilePage() {
         if (storedUser) {
             try {
                 // Fetch current user profile from backend
-                const response = await fetch('/api/users/profile', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/profile`, {
                     headers: {
                         'Authorization': token ? `Bearer ${token}` : ''
                     }
@@ -131,7 +131,7 @@ export default function AdminProfilePage() {
     const token = localStorage.getItem('matgoToken');
     
     try {
-        const response = await fetch('/api/users/profile', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/profile`, {
             method: 'PUT',
             headers: {
                 'Authorization': token ? `Bearer ${token}` : '',
