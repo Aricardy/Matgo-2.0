@@ -32,6 +32,7 @@ interface RouteDetails {
   image: string;
   imageHint: string;
   sacco: string;
+  tripId?: string; // Added to fix type error
 }
 
 interface Seat {
@@ -442,7 +443,8 @@ mpesaPaymentDescription: (price: number, seat: string) => `To complete your book
         // Send booking data to backend
         const token = localStorage.getItem('matgoToken');
         const bookingData = {
-          route: currentRouteDetails?.value || "unknown-route",
+          // Bookings table fields
+          route: currentRouteDetails?.value || "unknown-route", // route ID
           date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : new Date().toISOString().split('T')[0],
           time: selectedTime || "N/A",
           seats: selectedSeatsList,
@@ -453,7 +455,12 @@ mpesaPaymentDescription: (price: number, seat: string) => `To complete your book
           })),
           paymentMethod: language === 'KSW' ? "M-Pesa (Mfumo)" : "M-Pesa",
           sacco: currentRouteDetails?.sacco || "MatGo Fleet",
-          tripType: language === 'KSW' ? "Safari Ndefu" : "Long Distance"
+          tripType: language === 'KSW' ? "Safari Ndefu" : "Long Distance",
+          seatsBooked: selectedSeatsList.length,
+          paid: false,
+          status: 'pending',
+          // passengerId: user?.id || null, // Removed due to missing 'user'
+          tripId: currentRouteDetails?.tripId || null
         };
 
   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/booking`, {

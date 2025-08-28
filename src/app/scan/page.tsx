@@ -270,47 +270,104 @@ export default function ScanPage() {
 
     const handleFindBus = async () => {
       setManualEntryError(null);
-  const busIdToFind = encodeURIComponent(busNumberInput.trim());
+      const busIdToFind = encodeURIComponent(busNumberInput.trim());
       const token = localStorage.getItem('matgoToken');
     
       try {
-        // Try to fetch bus details from backend
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/matatus/${busIdToFind}`, {
-          headers: {
-            'Authorization': token ? `Bearer ${token}` : '',
-            'ngrok-skip-browser-warning': 'true',
-            'Accept': 'application/json'
-          }
+        // Try both endpoints in parallel
+        // Try both endpoints in parallel
+        const shortRoutePromise = fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/short-routes/${busIdToFind}`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
         });
-      
-        if (response.ok) {
-          const busData = await response.json();
+
+        const matatuPromise = fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/matatus/${busIdToFind}`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        const [shortRouteResponse, matatuResponse] = await Promise.all([
+          shortRoutePromise.catch(() => null),
+          matatuPromise.catch(() => null)
+        ]);
+
+        // Handle short route response
+        if (shortRouteResponse && shortRouteResponse.ok) {
+          const routeData = await shortRouteResponse.json();
+          const busDetails: ScannedBusDetails = {
+            id: routeData.id.toString(),
+            name: routeData.name,
+            route: routeData.description || routeData.name,
+            fare: routeData.price.toString(),
+            sacco: 'Short Route', // Short routes don't have saccos
+            type: 'Minibus', // Use Minibus type for short routes
+            image: `https://placehold.co/600x200.png?text=${routeData.name}`,
+            imageHint: 'Short route transport'
+          };
+          setFoundBusDetails(busDetails);
+          toast({ 
+            title: currentContent.busDetailsFound, 
+            description: currentContent.nganyaFoundToastDesc,
+            className: "bg-primary text-primary-foreground" 
+          });
+          return; // Found in short routes, no need to check matatu response
+          return; // Found in short routes, no need to check matatu response
+        }
+
+        // Handle matatu response
+        if (matatuResponse && matatuResponse.ok) {
+          const busData = await matatuResponse.json();
+          // Check if this is a short route matatu
+          const isShortRoute = busData.routeType === 'short' || busData.shortRoute === true;
+          const isShortDistanceBus = busData.type && ["minibus", "nganya", "short route", "short"].includes(busData.type.toLowerCase());
+          
+          if (!isShortRoute && !isShortDistanceBus) {
+            setFoundBusDetails(null);
+            setManualEntryError('Only short routes and short-distance buses are allowed in scan.');
+            toast({
+              variant: "destructive",
+              title: "Bus Error",
+              description: "Only short routes and short-distance buses are allowed in scan.",
+            });
+            return;
+          }
+
           const busDetails: ScannedBusDetails = {
             id: busData.plateNumber || busData.id,
             name: busData.name || busData.vehicleName,
             route: busData.route || busData.currentRoute || "Route Info",
             fare: busData.fare || busData.baseFare || "100",
             sacco: busData.sacco || busData.saccoName || "SACCO",
-            type: busData.type || "Bus",
+            type: (busData.type as "Nganya" | "Bus" | "Minibus") || "Minibus",
             image: busData.image || `https://placehold.co/600x200.png?text=${busData.plateNumber || busData.id}`,
             imageHint: busData.imageHint || `${busData.type || 'bus'} transport`
           };
-        
           setFoundBusDetails(busDetails);
           toast({ 
             title: currentContent.busDetailsFound, 
-            description: currentContent.nganyaFoundToastDesc, 
+            description: currentContent.nganyaFoundToastDesc,
             className: "bg-primary text-primary-foreground" 
           });
-        } else {
-          // Bus not found in database
-          setFoundBusDetails(null);
-          setManualEntryError(currentContent.busNotFoundDesc);
+          return;
         }
+
+        // If we get here, neither endpoint found the bus/route
+        setFoundBusDetails(null);
+        setManualEntryError(currentContent.busNotFoundDesc);
+        toast({
+          variant: "destructive",
+          title: currentContent.busNotFoundTitle,
+          description: currentContent.busNotFoundDesc
+        });
       } catch (error) {
         console.error('Error fetching bus details:', error);
         setFoundBusDetails(null);
         setManualEntryError(currentContent.busNotFoundDesc);
+        toast({
+          variant: "destructive",
+          title: currentContent.busNotFoundTitle,
+          description: currentContent.busNotFoundDesc
+        });
       }
     };
 
