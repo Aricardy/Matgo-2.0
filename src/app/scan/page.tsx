@@ -61,7 +61,7 @@ const getContent = (language: string) => ({
   payWithCash: language === 'KSW' ? 'Lipa kwa Pesa Taslimu' : 'Pay with Cash',
   seatCountLabel: language === 'KSW' ? 'Idadi ya Viti:' : 'Number of Seats:',
   enterPhoneNumber: language === 'KSW' ? 'Weka Nambari yako ya Simu' : 'Enter your Phone Number',
-  proceedToPay: language === 'KSW' ? 'Endelea Kulipa' : 'Proceed to Pay',
+  proceedToPay: language === 'KSW' ? 'Thibitisha Malipo' : 'Confirm Payment',
   changePaymentMethod: language === 'KSW' ? 'Badilisha Njia' : 'Change Method',
   paymentInitiatedTitle: language === 'KSW' ? 'Malipo Yameanzishwa' : 'Payment Initiated',
   paymentInitiatedDesc: (method: string, fare: string, phone: string) => 
@@ -320,9 +320,9 @@ export default function ScanPage() {
     const handleProceedToPay = async () => {
       if (!currentBusToPay) return;
 
-      // Only validate phone number for mobile money payments
-      if (selectedPaymentMethod !== 'cash' && (!phoneNumber || !/^(07|01)\d{8}$/.test(phoneNumber))) {
-        toast({ variant: "destructive", title: currentContent.invalidPhoneTitle, description: currentContent.invalidPhoneDesc });
+      // No phone number validation for Mpesa/Airtel, just require a message
+      if ((selectedPaymentMethod === 'mpesa' || selectedPaymentMethod === 'airtel') && !phoneNumber) {
+        toast({ variant: "destructive", title: 'Payment Message Required', description: 'Please enter your payment confirmation message.' });
         return;
       }
 
@@ -370,73 +370,55 @@ export default function ScanPage() {
           return navigateToReceipt(paymentResult);
         }
 
-        // Submit M-Pesa payment request
-        const response = await fetch('/api/payments', {
-          method: 'POST',
-          headers: {
-            'Authorization': token ? `Bearer ${token}` : '',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(paymentData)
+        // For Mpesa/Airtel, just show payment received toast and generate receipt
+        toast({
+          title: language === 'KSW' ? 'Malipo Yamepokelewa' : 'Payment Received',
+          description: language === 'KSW'
+            ? `Uthibitisho wa malipo ya Ksh ${totalFare} umetumwa. Risiti yako inatengenezwa.`
+            : `Payment confirmation for Ksh ${totalFare} received. Your receipt is being generated.`,
+          className: "bg-green-500 text-white"
         });
 
-        const paymentResult = await response.json();
-        
-        if (response.ok && paymentResult.data) {
-          // Show STK push notification
-          toast({ 
-            title: language === 'KSW' ? 'Angalia Simu Yako' : 'Check Your Phone',
-            description: language === 'KSW'
-              ? `Thibitisha malipo ya Ksh ${totalFare} kwenye simu yako`
-              : `Confirm payment of Ksh ${totalFare} on your phone`,
-            className: "bg-green-500 text-white"
-          });
-        
-          // Generate passenger names based on seat count
-          const passengerNames = [];
-          const userName = storedUser ? JSON.parse(storedUser).firstName : (language === 'KSW' ? "Abiria" : "Passenger");
-          for (let i = 0; i < seatCount; i++) {
-            if (i === 0) {
-              passengerNames.push(userName);
-            } else {
-              passengerNames.push(`${userName} +${i}`);
-            }
+        // Generate passenger names based on seat count
+        const passengerNames = [];
+        const userName = storedUser ? JSON.parse(storedUser).firstName : (language === 'KSW' ? "Abiria" : "Passenger");
+        for (let i = 0; i < seatCount; i++) {
+          if (i === 0) {
+            passengerNames.push(userName);
+          } else {
+            passengerNames.push(`${userName} +${i}`);
           }
-        
-          // Generate seat numbers based on seat count
-          const seatNumbers = [];
-          for (let i = 1; i <= seatCount; i++) {
-            seatNumbers.push(`S${i}`);
-          }
-        
-          const paymentMethodText = selectedPaymentMethod === 'mpesa' ? 'M-Pesa' :
-                                   selectedPaymentMethod === 'airtel' ? 'Airtel Money' : 'Cash';
-        
-          // Construct query parameters for the receipt page with real payment data
-          const queryParams = new URLSearchParams({
-            route: currentBusToPay.route,
-            date: new Date().toISOString().split('T')[0],
-            time: new Date().toLocaleTimeString(language === 'KSW' ? 'sw-KE' : 'en-US', { hour: '2-digit', minute: '2-digit' }),
-            seats: seatNumbers.join(", "),
-            price: String(totalFare),
-            passengers: passengerNames.join(", "),
-            paymentMethod: paymentMethodText,
-            vehicleInfo: currentBusToPay.name || currentBusToPay.id,
-            vehicleImage: currentBusToPay.image || `https://placehold.co/600x200.png?text=${currentBusToPay.id}`,
-            vehicleImageHint: currentBusToPay.imageHint || `${currentBusToPay.type.toLowerCase()} bus`,
-            sacco: currentBusToPay.sacco,
-            tripType: language === 'KSW' ? "Nauli ya Moja kwa Moja" : "Instant Fare",
-            paymentId: paymentResult.data?.CheckoutRequestID || paymentResult.id || '',
-            transactionRef: paymentResult.data?.MerchantRequestID || paymentResult.transactionRef || '',
-            seatCount: String(seatCount)
-          }).toString();
-
-          router.push(`/receipt/sample?${queryParams}`);
-        } else {
-          // Handle specific M-Pesa error cases
-          const errorMessage = paymentResult.message || 'Payment failed';
-          throw new Error(errorMessage);
         }
+
+        // Generate seat numbers based on seat count
+        const seatNumbers = [];
+        for (let i = 1; i <= seatCount; i++) {
+          seatNumbers.push(`S${i}`);
+        }
+
+        const paymentMethodText = selectedPaymentMethod === 'mpesa' ? 'M-Pesa' :
+                                 selectedPaymentMethod === 'airtel' ? 'Airtel Money' : 'Cash';
+
+        // Construct query parameters for the receipt page
+        const queryParams = new URLSearchParams({
+          route: currentBusToPay.route,
+          date: new Date().toISOString().split('T')[0],
+          time: new Date().toLocaleTimeString(language === 'KSW' ? 'sw-KE' : 'en-US', { hour: '2-digit', minute: '2-digit' }),
+          seats: seatNumbers.join(", "),
+          price: String(totalFare),
+          passengers: passengerNames.join(", "),
+          paymentMethod: paymentMethodText,
+          vehicleInfo: currentBusToPay.name || currentBusToPay.id,
+          vehicleImage: currentBusToPay.image || `https://placehold.co/600x200.png?text=${currentBusToPay.id}`,
+          vehicleImageHint: currentBusToPay.imageHint || `${currentBusToPay.type.toLowerCase()} bus`,
+          sacco: currentBusToPay.sacco,
+          tripType: language === 'KSW' ? "Nauli ya Moja kwa Moja" : "Instant Fare",
+          paymentId: '',
+          transactionRef: '',
+          seatCount: String(seatCount)
+        }).toString();
+
+        router.push(`/receipt/sample?${queryParams}`);
       } catch (error: any) {
         console.error('Error processing payment:', error);
       
