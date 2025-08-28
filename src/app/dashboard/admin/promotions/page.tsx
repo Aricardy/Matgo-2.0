@@ -45,7 +45,7 @@ export default function PromotionsPage() {
             
             try {
                 // Fetch all buses for selection
-                const busesResponse = await fetch('/api/vehicles', {
+                const busesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/vehicles`, {
                     headers: {
                         'Authorization': token ? `Bearer ${token}` : ''
                     }

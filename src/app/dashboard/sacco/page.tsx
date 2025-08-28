@@ -94,7 +94,7 @@ export default function SaccoAdminDashboard() {
     const fetchIndividualStats = async (token: string | null, saccoId: string) => {
       try {
         // Fetch buses count
-        const busesResponse = await fetch('/api/vehicles', {
+  const busesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/vehicles`, {
           headers: { 'Authorization': token ? `Bearer ${token}` : '' }
         });
         let busCount = 0;

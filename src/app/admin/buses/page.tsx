@@ -56,7 +56,7 @@ export default function BusesPage() {
                     return;
                 }
                 // Fetch vehicles/buses from backend
-                const response = await fetch('/api/vehicles', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/vehicles`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -216,7 +216,7 @@ export default function BusesPage() {
                                 <Button
                                   onClick={async () => {
                                     try {
-                                      const response = await fetch(`/api/vehicles/${bus.id}/generate-qr`, {
+                                      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/vehicles/${bus.id}/generate-qr`, {
                                         method: "POST",
                                         headers: {
                                           Authorization: `Bearer ${localStorage.getItem("matgoToken")}`,
