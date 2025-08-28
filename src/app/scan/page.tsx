@@ -140,6 +140,12 @@ export default function ScanPage() {
   // Current bus to pay for
   const currentBusToPay = foundBusDetails || qrScannedBusDetails;
   
+
+  // Only allow payment/receipt for buses found via user search, not QR scan
+  const isBusFromSearch = !!foundBusDetails && !qrScannedBusDetails;
+  // Identify long-distance bus (customize this check as needed)
+  const isLongDistanceBus = (foundBusDetails?.type === 'Bus' && foundBusDetails?.route?.toLowerCase().includes('long'));
+
   // Get translations based on current language
   const currentContent = getContent(language);
 
@@ -421,21 +427,38 @@ export default function ScanPage() {
         router.push(`/receipt/sample?${queryParams}`);
       } catch (error: any) {
         console.error('Error processing payment:', error);
-      
-        const errorMessage = error.message || (language === 'KSW' 
+        let errorMessage = error.message || (language === 'KSW' 
           ? 'Malipo yameshindikana. Tafadhali jaribu tena.'
           : 'Payment failed. Please try again.');
-        
+
+        // Block payment/receipt for long-distance buses or QR scanned buses
+        if (!isBusFromSearch) {
+          errorMessage = language === 'KSW'
+            ? 'Basi la safari ndefu au lililoskaniwa haliwezi kulipiwa hapa. Tafadhali tumia sehemu ya booking.'
+            : 'Long-distance or QR scanned buses cannot be paid for here. Please use the booking section.';
+          toast({
+            variant: "destructive",
+            title: language === 'KSW' ? 'Hitilafu ya Basi' : 'Bus Error',
+            description: errorMessage,
+          });
+          return;
+        }
+        if (isLongDistanceBus) {
+          errorMessage = language === 'KSW'
+            ? 'Basi la safari ndefu haliwezi kulipiwa hapa. Tafadhali tumia sehemu ya booking.'
+            : 'Long-distance buses cannot be paid for here. Please use the booking section.';
+          toast({
+            variant: "destructive",
+            title: language === 'KSW' ? 'Hitilafu ya Basi' : 'Bus Error',
+            description: errorMessage,
+          });
+          return;
+        }
         toast({ 
           variant: "destructive",
           title: language === 'KSW' ? 'Hitilafu ya Malipo' : 'Payment Error',
           description: errorMessage,
         });
-      
-        // Navigate to receipt page with payment details
-        // If paymentResult is not defined due to error, skip navigation
-        // (prevents reference error)
-        // return navigateToReceipt(paymentResult);
       }
     };
 
