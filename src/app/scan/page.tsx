@@ -537,15 +537,42 @@ export default function ScanPage() {
           </div>
         ) : (
           <div className="mt-6 space-y-4">
-            {selectedPaymentMethod !== 'cash' && (
-              <div>
-                <Label htmlFor="phoneNumber" className="font-semibold text-base">{currentContent.enterPhoneNumber}</Label>
+            {selectedPaymentMethod === 'mpesa' && (
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-blue-800 dark:text-blue-200 font-semibold">Mpesa Payment Instructions</p>
+                <p className="text-blue-700 dark:text-blue-300 text-sm mt-1">
+                  Using *334# or sim tool kit or Mpesa app.<br />
+                  Choose Lipa na Mpesa then Buy goods and Services.<br />
+                  <strong>Till number: 6201430</strong><br />
+                  Enter the shown amount.
+                </p>
+                <Label htmlFor="mpesaMessage" className="font-semibold text-base mt-2">Enter Mpesa Payment Message</Label>
                 <Input
-                  id="phoneNumber"
-                  type="tel"
+                  id="mpesaMessage"
+                  type="text"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="07XX XXX XXX or 01XX XXX XXX"
+                  placeholder="Enter Mpesa payment confirmation message"
+                  className="mt-1 text-base py-3 rounded-lg border-2 focus:border-primary focus:ring-primary"
+                />
+              </div>
+            )}
+            {selectedPaymentMethod === 'airtel' && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <p className="text-red-800 dark:text-red-200 font-semibold">Airtel Money Payment Instructions</p>
+                <p className="text-red-700 dark:text-red-300 text-sm mt-1">
+                  Using *334# or *222# or Airtel money app.<br />
+                  Choose Buy goods and Services then Mpesa till = 6201430.<br />
+                  <strong>Till number: 6201430</strong><br />
+                  Enter the shown amount.
+                </p>
+                <Label htmlFor="airtelMessage" className="font-semibold text-base mt-2">Enter Airtel Payment Message</Label>
+                <Input
+                  id="airtelMessage"
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter Airtel payment confirmation message"
                   className="mt-1 text-base py-3 rounded-lg border-2 focus:border-primary focus:ring-primary"
                 />
               </div>
